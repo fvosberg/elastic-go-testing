@@ -1,0 +1,28 @@
+version: '2'
+services:
+    web:
+        build:
+            context: .
+        ports:
+            - "80:80"
+        links:
+            - elasticsearch
+        depends_on:
+            - elasticsearch
+        volumes:
+            - ./src:/go/src/github.com/fvosberg/elastic-go-testing
+            - ./bin:/go/bin
+        environment:
+            - GO_SRC_PATH=$GOPATH/src/github.com/fvosberg/elastic-go-testing
+    elasticsearch:
+        image: elasticsearch:2.3
+    kibana:
+        build:
+            context: .
+            dockerfile: Dockerfile.kibana
+        links:
+            - elasticsearch
+        depends_on:
+            - elasticsearch
+        ports:
+            - "5601:5601"
